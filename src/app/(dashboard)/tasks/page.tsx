@@ -22,49 +22,52 @@ export default function TasksPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tasks</h1>
-          <p className="text-gray-500 mt-1">View and manage all tasks</p>
+          <h1 className="text-3xl font-bold text-foreground">Tasks</h1>
+          <p className="text-muted-foreground mt-2">View and manage all tasks</p>
         </div>
         <Link
           href="/tasks/new"
-          className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 font-semibold text-sm shadow-lg hover:shadow-xl transition-all"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-secondary text-white rounded-xl hover:shadow-lg font-semibold text-sm transition-all"
         >
-          + New Task
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          New Task
         </Link>
       </div>
 
-      <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-sm rounded-xl overflow-hidden">
+      <div className="bg-card/80 backdrop-blur-sm border border-border/50 shadow-sm rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200/50">
-            <thead className="bg-gray-50/50">
+          <table className="min-w-full divide-y divide-border/50">
+            <thead className="bg-muted/30">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Task
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Product
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Priority
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Assignee
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Created
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200/50">
+            <tbody className="bg-card divide-y divide-border/50">
               {tasks.map((task: any) => (
                 <tr
                   key={task.id}
-                  className="hover:bg-gray-50/50 transition-colors cursor-pointer"
+                  className="hover:bg-accent/50 transition-colors cursor-pointer group"
                   onClick={() => (window.location.href = `/tasks/${task.id}`)}
                 >
                   <td className="px-6 py-4">
@@ -73,56 +76,75 @@ export default function TasksPage() {
                       className="block"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <div className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+                      <div className="text-sm font-bold text-primary group-hover:underline">
                         {task.taskKey}
                       </div>
-                      <div className="text-sm text-gray-600 mt-0.5">{task.title}</div>
+                      <div className="text-sm text-muted-foreground mt-0.5 line-clamp-1">{task.title}</div>
                     </Link>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       {task.product?.colorTheme && (
                         <div
-                          className="w-2 h-2 rounded-full"
+                          className="w-2 h-2 rounded-full shadow-sm"
                           style={{ backgroundColor: task.product.colorTheme }}
                         />
                       )}
-                      <span className="text-sm text-gray-900">{task.product?.name}</span>
+                      <span className="text-sm text-foreground font-medium">{task.product?.name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2.5 py-1 text-xs font-semibold rounded-lg border ${
+                      className={`px-2.5 py-1 text-xs font-semibold rounded-lg border shadow-sm ${
                         task.priority === 'P0_CRITICAL'
                           ? 'bg-red-50 text-red-700 border-red-200'
                           : task.priority === 'P1_HIGH'
                           ? 'bg-orange-50 text-orange-700 border-orange-200'
                           : task.priority === 'P2_MEDIUM'
                           ? 'bg-blue-50 text-blue-700 border-blue-200'
-                          : 'bg-gray-50 text-gray-700 border-gray-200'
+                          : 'bg-muted text-muted-foreground border-border'
                       }`}
                     >
                       {task.priority.replace('_', ' ')}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-900 font-medium">
-                      {task.status.replace('_', ' ')}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          task.assignee ? 'bg-green-500' : 'bg-gray-300'
-                        }`}
-                      />
-                      <span className="text-sm text-gray-900">
-                        {task.assignee?.name || 'Unassigned'}
+                    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-muted/50">
+                      <div className={`w-1.5 h-1.5 rounded-full ${
+                        task.status === 'DONE' ? 'bg-emerald-500' :
+                        task.status === 'IN_PROGRESS' ? 'bg-blue-500' :
+                        task.status === 'BLOCKED' ? 'bg-red-500' :
+                        'bg-muted-foreground'
+                      }`}></div>
+                      <span className="text-sm text-foreground font-medium">
+                        {task.status.replace('_', ' ')}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      {task.assignee ? (
+                        <>
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-[10px] font-semibold shadow-sm">
+                            {task.assignee.name.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="text-sm text-foreground font-medium">
+                            {task.assignee.name}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
+                            <div className="w-3 h-3 border-2 border-dashed border-muted-foreground/50 rounded-full"></div>
+                          </div>
+                          <span className="text-sm text-muted-foreground">
+                            Unassigned
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                     {formatDate(task.createdAt)}
                   </td>
                 </tr>

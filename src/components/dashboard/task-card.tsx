@@ -87,67 +87,86 @@ export function TaskCard({ task }: TaskCardProps) {
 
   return (
     <div
-      className={`group bg-white rounded-xl shadow-sm hover:shadow-md border-l-4 ${styles.border} p-5 transition-all duration-200 hover:-translate-y-0.5`}
+      className={`group relative bg-card rounded-xl shadow-sm hover:shadow-lg border-l-4 ${styles.border} p-5 transition-all duration-200 hover:-translate-y-1 cursor-pointer overflow-hidden`}
+      onClick={() => window.location.href = `/tasks/${task.id}`}
     >
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex-1 min-w-0">
-          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-            {task.taskKey}
+      {/* Gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+      
+      <div className="relative z-10">
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="text-xs font-bold text-muted-foreground/80 uppercase tracking-wider">
+                {task.taskKey}
+              </div>
+              {task.product.colorTheme && (
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-muted/50">
+                  <div
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: task.product.colorTheme }}
+                  />
+                  <span className="text-xs text-muted-foreground font-medium">{task.product.name}</span>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-2 mb-1">
-            {task.product.colorTheme && (
-              <div
-                className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: task.product.colorTheme }}
-              />
-            )}
-            <span className="text-xs text-gray-500 font-medium">{task.product.name}</span>
-          </div>
-        </div>
-        <span
-          className={`px-2.5 py-1 text-xs font-semibold rounded-md ${styles.badge} shrink-0`}
-        >
-          {task.priority.replace('_', ' ')}
-        </span>
-      </div>
-
-      <h3 className="text-sm font-semibold text-gray-900 mb-3 line-clamp-2 leading-snug">
-        {task.title}
-      </h3>
-
-      <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-        <div className="flex items-center gap-1.5">
-          <div
-            className={`w-1.5 h-1.5 rounded-full ${
-              task.assignee ? 'bg-green-500' : 'bg-gray-300'
-            }`}
-          />
-          <span className="font-medium">
-            {task.assignee ? task.assignee.name : 'Unassigned'}
+          <span
+            className={`px-2.5 py-1 text-xs font-semibold rounded-lg ${styles.badge} shrink-0 shadow-sm`}
+          >
+            {task.priority.replace('_', ' ')}
           </span>
         </div>
-        <span className="text-gray-400">{age}d ago</span>
-      </div>
 
-      <div className="flex gap-2 pt-3 border-t border-gray-100">
-        {!task.assignee && (
-          <button
-            onClick={handleAssignToMe}
-            disabled={loading}
-            className="flex-1 px-3 py-1.5 text-xs font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Assign to me
-          </button>
-        )}
-        {task.status !== 'DONE' && (
-          <button
-            onClick={handleComplete}
-            disabled={loading}
-            className="flex-1 px-3 py-1.5 text-xs font-medium bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Done
-          </button>
-        )}
+        <h3 className="text-sm font-semibold text-foreground mb-4 line-clamp-2 leading-relaxed text-pretty">
+          {task.title}
+        </h3>
+
+        <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+          <div className="flex items-center gap-2">
+            {task.assignee ? (
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-[10px] font-semibold shadow-sm">
+                  {task.assignee.name.charAt(0).toUpperCase()}
+                </div>
+                <span className="font-medium text-foreground/80">
+                  {task.assignee.name}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
+                  <div className="w-3 h-3 border-2 border-dashed border-muted-foreground/50 rounded-full"></div>
+                </div>
+                <span className="font-medium text-muted-foreground">
+                  Unassigned
+                </span>
+              </div>
+            )}
+          </div>
+          <span className="text-muted-foreground/70">{age}d ago</span>
+        </div>
+
+        <div className="flex gap-2 pt-3 border-t border-border/50" onClick={(e) => e.stopPropagation()}>
+          {!task.assignee && (
+            <button
+              onClick={handleAssignToMe}
+              disabled={loading}
+              className="flex-1 px-3 py-2 text-xs font-semibold bg-gradient-to-r from-primary to-secondary text-white rounded-lg hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              Assign to me
+            </button>
+          )}
+          {task.status !== 'DONE' && (
+            <button
+              onClick={handleComplete}
+              disabled={loading}
+              className="flex-1 px-3 py-2 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              Mark Done
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
